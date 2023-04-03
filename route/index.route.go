@@ -1,0 +1,28 @@
+package route
+
+import (
+	"belajar/config"
+	"belajar/handler"
+	"belajar/middleware"
+	"belajar/utils"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+func RouteInit(r *fiber.App) {
+	r.Static("/public", config.ProjectRootPath+"/public/asset")
+
+	r.Post("/login", handler.LoginHandler)
+
+	r.Get("/user", middleware.AuthMiddleware, handler.UserHandlerGetAll)
+	r.Get("/user/:id", handler.UserHandlerGetById)
+	r.Post("/user", handler.UserHandlerCreate)
+	r.Put("/user/:id", handler.UserHandlerUpdate)
+	r.Put("/user/:id/update-email", handler.UserHandlerUpdateEmail)
+	r.Delete("/user/:id", handler.UserHandlerDelete)
+
+	r.Post("/book", utils.HandlerSingleFile, handler.BookHandlerCreate)
+
+	r.Post("/gallery", utils.HandlerMultipleFile, handler.PhotoHandlerCreate)
+	r.Delete("/gallery/:id", utils.HandlerMultipleFile, handler.PhotoHandlerDelete)
+}
